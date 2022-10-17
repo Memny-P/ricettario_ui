@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
+import Menu from './Menu';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import IndexGenres from './genres/IndexGenres';
+import LandingPage from './movies/LandingPage';
+import routes from './route-config';
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Menu />
+      <div className='container'>
+        <Routes>
+          {routes.map(route =>
+            <Route key={route.path} path={route.path} element={<route.component />}>
+            </Route>
+          )}
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
