@@ -9,7 +9,7 @@ import Pagination from "./Pagination";
 import RecordsPerPageSelect from "./RecordsPerPageSelect";
 
 export default function IndexEntity<T>(props: indexEntityProps<T>) {
-    const [enities, setEntities] = useState<T[]>([]);
+    const [entities, setEntities] = useState<T[]>([]);
     const [totalAmountOfPages, setTotalAmountOfPages] = useState(0);
     const [recordsPerPage, setRecordsPerPage] = useState(5);
     const [page, setPage] = useState(1);
@@ -76,10 +76,10 @@ export default function IndexEntity<T>(props: indexEntityProps<T>) {
                 totalAmountOfPages={totalAmountOfPages}
                 onChange={newPage => setPage(newPage)} />
 
-            <GenericList list={enities}>
+            <GenericList list={entities}>
                 <table className="table table-striped">
                     { // ! == i know this i not undefined + buttons == parent ha accesso ai buttons
-                        props.children(enities!, buttons)
+                        props.children(entities!, buttons)
                     }
                 </table>
             </GenericList>
