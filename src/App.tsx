@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import './App.css';
 import Menu from './Menu';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import IndexGenres from './genres/IndexGenres';
-import LandingPage from './movies/LandingPage';
 import routes from './route-config';
-function App() {
+import configureValidation from './Validation';
 
+configureValidation();  // preparo le validazioni custom
+
+function App() {
   return (
     <BrowserRouter>
       <Menu />
@@ -18,6 +18,11 @@ function App() {
           )}
         </Routes>
       </div>
+      <footer className='bd-footer py-5 mt-5 bg-light'>
+        <div className='container'>
+          React Movie {new Date().getFullYear().toString()}
+        </div>
+      </footer>
     </BrowserRouter>
   );
 }

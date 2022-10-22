@@ -21,11 +21,11 @@ const routes = [
 
     { path: '/actors', component: IndexActors },
     { path: '/actors/create', component: CreateActor },
-    { path: '/actors/edit', component: EditActor },
+    { path: '/actors/edit/:id', component: EditActor },
 
     { path: '/movietheaters', component: IndexMovieTheaters },
     { path: '/movietheaters/create', component: CreateMovieTheaters },
-    { path: '/movietheaters/edit:id', component: EditMovieTheaters },
+    { path: '/movietheaters/edit/:id', component: EditMovieTheaters },
 
     { path: '/movies/filter', component: FilterMovies },
     { path: '/movies/create', component: CreateMovie },
