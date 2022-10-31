@@ -49,6 +49,11 @@ export default function IndexEntity<T>(props: indexEntityProps<T>) {
         } catch (error) {
             if (error && error.response) {
                 console.error(error.response.data);
+                /*if (Array.isArray(error.response.data)){
+                setErrors(error.response.data);
+            } else{
+                setErrors(['An error has occurred']);
+            } */
             }
         }
     }
@@ -63,8 +68,8 @@ export default function IndexEntity<T>(props: indexEntityProps<T>) {
     return (
         <>
             <h3>{props.title}</h3>
-            <Link className="btn btn-primary" to={props.createUrl}
-            >Create {props.entityName}</Link >
+            {props.createUrl ? <Link className="btn btn-primary" to={props.createUrl}
+            >Create {props.entityName}</Link > : null}
 
             <RecordsPerPageSelect onChange={recordsPerPage => {
                 setPage(1);
@@ -90,8 +95,8 @@ export default function IndexEntity<T>(props: indexEntityProps<T>) {
 interface indexEntityProps<T> {
     url: string;
     title: string;
-    createUrl: string;
-    entityName: string;
+    createUrl?: string;
+    entityName?: string;
     children(enities: T[],
         buttons: (editUrl: string, id: number) => ReactElement): ReactElement;
 }

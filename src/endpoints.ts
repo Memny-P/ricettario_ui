@@ -1,2 +1,4 @@
 const baseUrl = process.env.REACT_APP_API_URL;
-export const urlGenres = `${baseUrl}/genres`
+export const urlIngredients = `${baseUrl}/ingredients`
+export const urlAccounts = `${baseUrl}/accounts`
+export const urlIngredientsbase = `${baseUrl}/ingredientsbase`

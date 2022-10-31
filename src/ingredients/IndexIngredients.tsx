@@ -1,17 +1,17 @@
-import { urlGenres } from "../endpoints";
+import { urlIngredients } from "../endpoints";
 import IndexEntity from "../utilis/IndexEntity";
-import { genreDTO } from "./genres.module";
+import { ingredientDTO } from "./ingredient.model";
 
 export default function IndexGenres() {
     return (
         <>
-            <IndexEntity<genreDTO>
-                url={urlGenres}
-                createUrl="/genres/create"
-                title="Genre"
-                entityName="genre"
+            <IndexEntity<ingredientDTO>
+                url={urlIngredients}
+                createUrl="/ingredients/create"
+                title="Ingredient"
+                entityName="ingredient"
             >
-                {(genres, buttons) =>
+                {(ingredients, buttons) =>
                     <>
                         <thead>
                             <tr>
@@ -20,13 +20,13 @@ export default function IndexGenres() {
                             </tr>
                         </thead>
                         <tbody>
-                            {genres.map(genre =>
-                                <tr key={genre.id}>
+                            {ingredients.map(ingredient =>
+                                <tr key={ingredient.id}>
                                     <td>
-                                        {buttons(`genres/edit/${genre.id}`, genre.id)}
+                                        {buttons(`/ingredients/edit/${ingredient.id}`, ingredient.id)}
                                     </td>
                                     <td>
-                                        {genre.name}
+                                        {ingredient.name}
                                     </td>
                                 </tr>)}
                         </tbody>

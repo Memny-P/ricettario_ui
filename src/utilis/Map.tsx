@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMapEvent, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvent, Marker, Popup } from "react-leaflet";
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -26,12 +26,18 @@ export default function Map(props: mapProps) {
             <TileLayer attribution="React Movies"
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
-            <MapClick setCoordinates={coordinates => {
-                setCoordinates([coordinates])
-                props.handleMapClick(coordinates);  // to parent component
-            }} />
+            {props.readOnly ? null :
+                <MapClick setCoordinates={coordinates => {
+                    setCoordinates([coordinates])
+                    props.handleMapClick(coordinates);  // to parent component
+                }} />
+            }
             {coordinates.map((coordinate, index) =>
-                <Marker position={[coordinate.lat, coordinate.lng]} key={index} />
+                <Marker position={[coordinate.lat, coordinate.lng]} key={index} >
+                    {coordinate.name ? <Popup>
+                        {coordinate.name}
+                    </Popup> : null}
+                </Marker>
             )}
 
         </MapContainer>
@@ -43,10 +49,13 @@ interface mapProps {
     height: string;
     coordinates: coordinateDTO[];
     handleMapClick(coordinates: coordinateDTO): void;
+    readOnly: boolean;
 }
 
 Map.defaultProps = {
-    height: '500px'
+    height: '500px',
+    handleMapClick: () => { },    // empty function
+    readOnly: false
 }
 
 
