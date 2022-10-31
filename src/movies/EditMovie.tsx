@@ -1,34 +1,74 @@
-import { actorMovieDTO } from "../actors/actors.model";
-import { genreDTO } from "../genres/genres.module";
-import { movieTheatersDTO } from "../movietheaters/movieTheater.model";
+import axios, { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { urlMovies } from "../endpoints";
+import DisplayErrors from "../utilis/DisplayErrors";
+import { convertMovieToFormData } from "../utilis/formDataUtils";
+import Loading from "../utilis/Loading";
 import MovieForm from "./MovieForm";
+import { movieCreationDTO, moviePutGetDTO } from "./movies.model";
 
 export default function EditMovie() {
 
-    const nonSelectedGenres: genreDTO[] = [{ id: 2, name: 'Drama' }];
-    const selectedGenres: genreDTO[] = [{ id: 1, name: 'Comedy' }];
+    const navigate = useNavigate();
+    const [errors, setErrors] = useState<string[]>([]);
+    const { id }: any = useParams();
+    const [movie, setMovie] = useState<movieCreationDTO>();
+    const [moviePutGet, setMoviePutGet] = useState<moviePutGetDTO>();
 
-    const nonSelectedMovieTheaters: movieTheatersDTO[] = [{ id: 2, name: 'Arcadia' }];
-    const selectedMovieTheaters: movieTheatersDTO[] = [{ id: 1, name: 'Sabil' }];
+    useEffect(() => {
+        axios.get(`${urlMovies}/putget/${id}`)
+            .then((response: AxiosResponse<moviePutGetDTO>) => {
+                const model: movieCreationDTO = {
+                    title: response.data.movie.title,
+                    inTheaters: response.data.movie.inTheaters,
+                    trailer: response.data.movie.trailer,
+                    posterURL: response.data.movie.poster,
+                    summary: response.data.movie.summary,
+                    releaseDate: new Date(response.data.movie.releaseDate),
+                };
 
-    const selectedActors: actorMovieDTO[] = [
-        { id: 1, name: "Felipe", character: 'Geralt', picture: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Tom_Holland_by_Gage_Skidmore.jpg' },]
+                setMovie(model);
+                setMoviePutGet(response.data);
+            })
+    }, [id])
+
+    async function edit(movieToEdit: movieCreationDTO) {
+        try {
+            const formData = convertMovieToFormData(movieToEdit);
+            await axios({
+                method: 'put',
+                url: `${urlMovies}/${id}`,
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            navigate(`/movies/${id}`);
+        } catch (error) {
+            if (error && error.response)
+                if (Array.isArray(error.response.data)) {
+                    setErrors(error.response.data);
+                } else {
+                    setErrors(['An error has occurred']);
+                }
+        }
+    }
+
     return (
         <>
             <h3>Edit Movie</h3>
-            <MovieForm
+            <DisplayErrors errors={errors} />
+            {movie && moviePutGet ?
+                <MovieForm
+                    model={movie}
+                    onSumbit={async values => await edit(values)}
+                    nonSelectedGenres={moviePutGet.nonSelectedGenres}
+                    selectedGenres={moviePutGet.selectedGenres}
 
-                model={{
-                    title: 'Toy story', inTheaters: false,
-                    trailer: 'url', releaseDate: new Date('2019-01-01T00:00:00')
-                }}
-                onSumbit={values => console.log(values)}
-                nonSelectedGenres={nonSelectedGenres}
-                selectedGenres={selectedGenres}
-                nonSelectedMovieTheaters={nonSelectedMovieTheaters}
-                selectedMovieTheaters={selectedMovieTheaters}
-                selectedActors={selectedActors}
-            />
+                    nonSelectedMovieTheaters={moviePutGet.nonSelectedMovieTheaters}
+                    selectedMovieTheaters={moviePutGet.selectedMovieTheaters}
+                    selectedActors={moviePutGet.actors}
+                /> : <Loading />
+            }
         </>
     )
 }

@@ -1,17 +1,25 @@
+import axios, { AxiosResponse } from "axios";
 import { ReactElement, useState } from "react";
-import { Typeahead } from "react-bootstrap-typeahead";
-import { actorMovieDTO } from "../actors/actors.model";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { actorDTO, actorMovieDTO } from "../actors/actors.model";
+import { urlActors } from "../endpoints";
 
 export default function TypeAheadActors(props: typeAheadProps) {
 
-    const actors: actorMovieDTO[] = [
-        { id: 1, name: "Felipe", character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Tom_Holland_by_Gage_Skidmore.jpg' },
-        { id: 2, name: "Beppe", character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Andrew_Garfield_by_Gage_Skidmore.jpg' },
-        { id: 3, name: "jessica", character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/3/31/Emma_Stone_at_Maniac_UK_premiere_%28cropped%29.jpg' },
-    ]
+    const [actors, setActors] = useState<actorMovieDTO[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
+    function handleSearch(query: string) {
+        setIsLoading(true);
+
+        axios.get(`${urlActors}/searchByName/${query}`)
+            .then((response: AxiosResponse<actorMovieDTO[]>) => {
+                setActors(response.data);
+                setIsLoading(false);
+            });
+    };
     const selected: actorMovieDTO[] = [];
-
+    // #region DRAGGABLE STUFFS
     const [draggedElement, setDraggedElement] = useState<actorMovieDTO | undefined>(undefined);
 
     function handleDragStart(actor: actorMovieDTO) {
@@ -35,24 +43,28 @@ export default function TypeAheadActors(props: typeAheadProps) {
 
         setDraggedElement(actor);
     }
+    // #endregion
     return (<div className="mb-3">
 
         <label>{props.displayName}</label>
-        <Typeahead
+        <AsyncTypeahead
             id="typeahead"
             onChange={(options) => {
                 if (options && options.length > 0) {
 
                     let actor = options[0] as actorMovieDTO;
-                    if (props.actors.findIndex(x => x.id === actor.id) === -1)
+                    if (props.actors.findIndex(x => x.id === actor.id) === -1) {
+                        actor.character = '';
                         props.onAdd([...props.actors, actor]);
+                    }
 
-                    console.log(actor);
                 }
             }}
             options={actors}
             labelKey="name"
-            filterBy={['name']}
+            filterBy={() => true}   // comunico che il filtro è già applicato a livello della webapi
+            isLoading={isLoading}
+            onSearch={handleSearch} // consume API
             placeholder="Write the name of the actor..."
             minLength={1}
             flip={true}

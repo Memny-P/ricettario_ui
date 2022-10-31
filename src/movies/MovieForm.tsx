@@ -13,6 +13,7 @@ import { useState } from "react";
 import { movieTheatersDTO } from "../movietheaters/movieTheater.model";
 import TypeAheadActors from "../forms/TypeAheadActors";
 import { actorMovieDTO } from "../actors/actors.model";
+import MarkdownField from "../forms/MarkdownField";
 
 export default function MovieForm(props: movieFormProps) {
 
@@ -45,6 +46,7 @@ export default function MovieForm(props: movieFormProps) {
                     title: Yup.string()
                         .required('This field is required.')
                         .firstLetterUppercase(),
+
                 })
             }
         >
@@ -57,6 +59,9 @@ export default function MovieForm(props: movieFormProps) {
                     <ImageField field="poster" displayName="Poster"
                         imageURL={props.model.posterURL}
                     />
+
+                    <MarkdownField displayName="Summary" field="summary" />
+
                     <MultipleSelector
                         displayName="Genres"
                         selected={selectedGenres}
@@ -102,7 +107,7 @@ export default function MovieForm(props: movieFormProps) {
                     />
 
                     <Button disabled={formikProps.isSubmitting} type="submit">Save changes</Button>
-                    <Link className="btn btn-secondary" to="/genres">Cancel</Link>
+                    <Link className="btn btn-secondary" to="/">Cancel</Link>
                 </Form>
             )}
         </Formik>

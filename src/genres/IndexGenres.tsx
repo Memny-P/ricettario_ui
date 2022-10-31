@@ -23,7 +23,7 @@ export default function IndexGenres() {
                             {genres.map(genre =>
                                 <tr key={genre.id}>
                                     <td>
-                                        {buttons(`genres/edit/${genre.id}`, genre.id)}
+                                        {buttons(`/genres/edit/${genre.id}`, genre.id)}
                                     </td>
                                     <td>
                                         {genre.name}

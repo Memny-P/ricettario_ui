@@ -16,7 +16,7 @@ export default function ImageField(props: imageFieldProps) {
             if (file) {
                 // trasformo il file in base64 => display a video
                 toBase64(file)
-                    .then((base64Representation: string) => { setImageBase64(base64Representation); })
+                    .then((base64Representation: string) => setImageBase64(base64Representation))
                     .catch(error => console.error(error));
 
                 values[props.field] = file;
