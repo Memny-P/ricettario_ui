@@ -1,0 +1,30 @@
+import { urlMovieTheaters } from "../endpoints";
+import IndexEntity from "../utilis/IndexEntity";
+import { movieTheatersDTO } from "./movieTheater.model";
+
+export default function IndexMovieTheaters() {
+    return (
+        <IndexEntity<movieTheatersDTO>
+            url={urlMovieTheaters}
+            createUrl='/movietheaters/create'
+            title='Movie Theaters'
+            entityName="Movie Theater"
+        >
+            {(entities, buttons) => <>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {entities?.map(entity =>
+                        <tr key={entity.id}>
+                            <td>{buttons(`/movietheaters/edit/${entity.id}`, entity.id)}</td>
+                            <td>{entity.name}</td>
+                        </tr>)}
+                </tbody>
+            </>}
+        </IndexEntity>
+    )
+}
