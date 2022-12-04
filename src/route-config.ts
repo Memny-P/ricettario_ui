@@ -5,10 +5,12 @@ import IndexUsers from "./auth/IndexUsers";
 import LandingPage from "./recipes/LandingPage";
 import IndexIngredients from "./ingredients/IndexIngredients";
 import CreateIngredient from "./ingredients/CreateIngredient";
+import EditIngredient from "./ingredients/EditIngredient";
 
 const routes = [
     { path: '/ingredients', component: IndexIngredients, isAdmin: false },
     { path: '/ingredients/create', component: CreateIngredient, isAdmin: false },
+    { path: '/ingredients/edit/:id', component: EditIngredient, isAdmin: false },
 
     { path: '/register', component: Register },
     { path: '/login', component: Login },

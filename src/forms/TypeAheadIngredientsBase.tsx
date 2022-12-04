@@ -1,9 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import { ErrorMessage, Field, FieldArray } from "formik";
-import { useState } from "react";
-import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { useEffect, useRef, useState } from "react";
+import { AsyncTypeahead, ClearButton } from "react-bootstrap-typeahead";
 import { urlIngredientsbase } from "../endpoints";
 import { ingredientBaseDTO } from "../ingredients/ingredient.model";
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import './TypeAheadIngredientsBase.css';
+import { Spinner } from "react-bootstrap";
 
 export default function TypeAheadIngredientsBase(props: typeAheadProps) {
     // elementi tra cui cercare
@@ -15,10 +18,11 @@ export default function TypeAheadIngredientsBase(props: typeAheadProps) {
 
         axios.get(`${urlIngredientsbase}/searchByName/${query}`)
             .then((response: AxiosResponse<ingredientBaseDTO[]>) => {
+
                 setIngredientsBaseDB(response.data);
                 setIsLoading(false);
             });
-    };
+    }
 
     return (
         <div className="mb-3">
@@ -39,21 +43,33 @@ export default function TypeAheadIngredientsBase(props: typeAheadProps) {
                 placeholder="Search generic ingredient..."
                 minLength={1}
                 flip={true}
-                renderMenuItemChildren={
-                    ingredient => (
-                        <>
-                            <span >{(ingredient as ingredientBaseDTO).name}</span>
-                        </>
-                    )
-                }
-            />
+                defaultSelected={props.defaultvalue}
+            // renderMenuItemChildren={
+            //     ingredientBase => (
+            //         <>
+            //             <span>{(ingredientBase as ingredientBaseDTO).name}</span>
+            //         </>
+            //     )
+            // }
+            >
+                {({ onClear, selected }) => (
+                    <div className="rbt-aux">
+                        {!!selected.length &&
+                            <ClearButton title="clear input"
+                                onClick={onClear}
+                                style={{ color: 'red' }}
+                            />}
+                        {/* {!selected.length && <Spinner animation="grow" size="sm" />} */}
+                    </div>
+                )}
+            </AsyncTypeahead>
         </div>
     )
 }
 
 interface typeAheadProps {
     displayName: string;
-    idIngredientBase?: number;
+    defaultvalue?: ingredientBaseDTO[];
     // To parent
     onSelect(ingredientBaseId: number): void;
 }
