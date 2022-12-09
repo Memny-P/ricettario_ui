@@ -17,6 +17,7 @@ export default function IndexGenres() {
                             <tr>
                                 <th></th>
                                 <th>Name</th>
+                                <th>Picture</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,6 +28,9 @@ export default function IndexGenres() {
                                     </td>
                                     <td>
                                         {ingredient.name}
+                                    </td>
+                                    <td>
+                                        {ingredient.pictureUrl}
                                     </td>
                                 </tr>)}
                         </tbody>

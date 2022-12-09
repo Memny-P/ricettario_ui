@@ -9,9 +9,10 @@ import ImageField from "../forms/ImageField";
 import TextField from "../forms/TextField";
 import TypeAheadIngredientsBase from "../forms/TypeAheadIngredientsBase";
 import Button from "../utilis/Button";
+import Difficulty from "../utilis/Difficulty";
 import { ingredientBaseDTO, ingredientCreationDTO, ingredientEditDTO } from "./ingredient.model";
 
-export default function IngredientForm(props: ingredientFormProps) {
+export default function RecipeForm(props: recipeFormDTO) {
 
     const [idIngredientBase, setIngredientBase] = useState<number>(props.model.ingredientBaseId);
 
@@ -23,26 +24,30 @@ export default function IngredientForm(props: ingredientFormProps) {
                 props.onSubmit(values, action)
             }}
             validationSchema={Yup.object({
-                name: Yup.string()
+                title: Yup.string()
                     .required('This field is required.')
-                    .max(75, 'Max length is 75 characters.'),
-                idIngredientBase: Yup.number().min(1, () => {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'You need to choose a Generic ingredient',
-                        icon: 'error'
-                    });
-                })
+                    .max(75, 'Max length is 75 characters.')
             })}>
             {(formikProps) => (
                 <Form>
-                    <TextField field="name" displayName="Name" />
-                    <TypeAheadIngredientsBase
+                    <TextField field="title" displayName="Name" />
+                    <Difficulty
+                        maximumValue={3}
+                        onChange={value => console.log(value)}
+                        selectedValue
+                    />
+                    <TypeAheadIngredients
                         defaultvalue={props.initialIngredient ?
                             [props.initialIngredient.ingredientBase] : []}
                         displayName="Generic ingredient"
                         onSelect={idIngredientBaseSelected => setIngredientBase(idIngredientBaseSelected)}
                     />
+
+
+                    <table>
+
+                    </table>
+
                     <ImageField
                         field="picture"
                         displayName="Picture"
@@ -57,9 +62,8 @@ export default function IngredientForm(props: ingredientFormProps) {
 
 }
 
-interface ingredientFormProps {
-    model: ingredientCreationDTO;
-    initialIngredient?: ingredientEditDTO;
+interface recipeFormDTO {
+    model: recipeCreationDTO;
     // voglio poter modificar il comportamento dal parent component
     onSubmit(values: ingredientCreationDTO, action: FormikHelpers<ingredientCreationDTO>): void;
 }

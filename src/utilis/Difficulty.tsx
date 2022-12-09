@@ -2,9 +2,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import AuthenticationContext from "../auth/AuthenticationContext";
-import './Rating.css';
+import './Difficulty.css';
 
-export default function Ratings(props: ratingsProps) {
+export default function Difficulty(props: ratingsProps) {
 
     // tanti elementi quanti maximumValue
     const [maximumValueArr, setMaximumValueArr] = useState<number[]>([]);

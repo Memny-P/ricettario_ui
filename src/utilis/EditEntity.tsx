@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { useNavigate, useParams } from "react-router-dom";
 import DisplayErrors from "./DisplayErrors";
+import { ErrorsAxiosHandler } from "./ErrorsHandler";
 import Loading from "./Loading";
 
 // <TCreation> : lavoro con i generics => passo il tipo oggetto come parametro
@@ -11,12 +12,15 @@ export default function EditEntity<TCreation, TRead>
 
     const { id }: any = useParams();
     const [entity, setEntity] = useState<TCreation>();
+    const [responseData, setResponseData] = useState<TRead>();
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`${props.url}/${id}`)
+        let url = props.urlEdit ? props.urlEdit : props.url;
+        axios.get(`${url}/${id}`)
             .then((response: AxiosResponse<TRead>) => {
+                setResponseData(response.data);
                 setEntity(props.transform(response.data));
             });
     }, [id]);
@@ -37,12 +41,7 @@ export default function EditEntity<TCreation, TRead>
             }
             navigate(props.indexURL);
         } catch (error) {
-            if (error && error.response)
-                if (Array.isArray(error.response.data)) {
-                    setErrors(error.response.data);
-                } else {
-                    setErrors(['An error has occurred']);
-                }
+            setErrors(ErrorsAxiosHandler(error));
         }
     }
 
@@ -50,7 +49,7 @@ export default function EditEntity<TCreation, TRead>
         <>
             <h3>Edit {props.entityName}</h3>
             <DisplayErrors errors={errors} />
-            {entity ? props.children(entity, edit)    // form in in base all'entity, e così posso chiamare la funzione di edit dal parente
+            {entity ? props.children(entity, responseData, edit)    // form in in base all'entity, e così posso chiamare la funzione di edit dal parente
                 : <Loading />}
         </>
     )
@@ -58,11 +57,12 @@ export default function EditEntity<TCreation, TRead>
 
 interface editEntityProps<TCreation, TRead> {
     url: string;
+    urlEdit?: string;
     entityName: string;
     indexURL: string;
     transform(entity: TRead): TCreation;
     transformFormData?(model: TCreation): FormData;
-    children(entity: TCreation, edit: (entity: TCreation) => void): ReactElement;
+    children(entity: TCreation, responseData: TRead | undefined, edit: (entity: TCreation) => void): ReactElement;
 }
 
 
