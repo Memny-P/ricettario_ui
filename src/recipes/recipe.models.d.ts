@@ -8,6 +8,7 @@ export interface recipeDTO {
     servings: number;
     recipeIngredients: recipeIngredientDTO[];
     recipeSteps: recipeStepDTO[];
+    pictureUrl: string;
 }
 export interface recipeIngredientDTO {
     ingredient: ingredientDTO;
@@ -15,5 +16,14 @@ export interface recipeIngredientDTO {
     quantity: number;
 }
 export interface recipeStepDTO {
- step:stepDTO;
+    step: stepDTO;
+}
+// TODO valutare se mettere un creationDTO
+export interface recipeCreationDTO {
+    title: string;
+    difficulty: number;
+    servings: number;
+    recipeIngredients: recipeIngredientDTO[];
+    recipeSteps: recipeStepDTO[];
+    pictureUrl: string;
 }

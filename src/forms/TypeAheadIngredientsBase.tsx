@@ -5,7 +5,7 @@ import { AsyncTypeahead, ClearButton } from "react-bootstrap-typeahead";
 import { urlIngredientsbase } from "../endpoints";
 import { ingredientBaseDTO } from "../ingredients/ingredient.model";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import './TypeAheadIngredientsBase.css';
+import './TypeAhead.css';
 import { Spinner } from "react-bootstrap";
 
 export default function TypeAheadIngredientsBase(props: typeAheadProps) {

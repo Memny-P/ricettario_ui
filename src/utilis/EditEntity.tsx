@@ -41,16 +41,7 @@ export default function EditEntity<TCreation, TRead>
             }
             navigate(props.indexURL);
         } catch (error) {
-<<<<<<< HEAD
             setErrors(ErrorsAxiosHandler(error));
-=======
-            if (error && error.response)
-                if (Array.isArray(error.response.data)) {
-                    setErrors(error.response.data);
-                } else {
-                    setErrors(['An error has occurred']);
-                }
->>>>>>> f7af4adc2653c1c6dfec13f1ddd36b6f3725be86
         }
     }
 
@@ -71,11 +62,7 @@ interface editEntityProps<TCreation, TRead> {
     indexURL: string;
     transform(entity: TRead): TCreation;
     transformFormData?(model: TCreation): FormData;
-<<<<<<< HEAD
     children(entity: TCreation, responseData: TRead | undefined, edit: (entity: TCreation) => void): ReactElement;
-=======
-    children(entity: TCreation, edit: (entity: TCreation) => void): ReactElement;
->>>>>>> f7af4adc2653c1c6dfec13f1ddd36b6f3725be86
 }
 
 
