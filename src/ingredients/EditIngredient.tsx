@@ -9,6 +9,7 @@ export default function EditIngredient() {
         return {
             name: ingredient.name,
             ingredientBaseId: ingredient.ingredientBase.id,
+            measurementId: ingredient.measurement.id,
             pictureUrl: ingredient.pictureUrl,
         };
     }

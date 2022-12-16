@@ -16,46 +16,36 @@ export default function Menu() {
     return (
         <nav className="navbar navbar-expand-md navbar-light bg-light">
             <div className="container-fluid">
-                <NavLink className="navbar-brand" to="/">React Movies</NavLink>
+                <NavLink className="navbar-brand" to="/">Grandpa Cooker</NavLink>
                 <div className="collapse navbar-collapse"
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/movies/filter">
-                                Filter Movies
+                            <NavLink className="nav-link" to="/ingredients">
+                                Ingredients
                             </NavLink>
                         </li>
-                        <Authorized
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/recipes/create">
+                                Create Recipe
+                            </NavLink>
+                        </li>
+                        {/* <Authorized
                             role="admin"
                             authorized={<>
                                 <li className="nav-item">
-                                    <NavLink className="nav-link" to="/genres">
-                                        Genres
+                                    <NavLink className="nav-link" to="/ingredients">
+                                        Ingredients
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink className="nav-link" to="/actors">
-                                        Actors
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink className="nav-link" to="/movietheaters">
-                                        Movie Theaters
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink className="nav-link" to="/movies/create">
-                                        Create a movie
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink className="nav-link" to="/users">
-                                        Users
+                                    <NavLink className="nav-link" to="/recipes/create">
+                                        Create Recipe
                                     </NavLink>
                                 </li>
                             </>}
-                        />
+                        /> */}
                     </ul>
                     <div className="d-flex">
                         <Authorized

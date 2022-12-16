@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { urlRecipe } from "../endpoints";
+import { urlRecipes } from "../endpoints";
 import DisplayErrors from "../utilis/DisplayErrors";
 import { ErrorsAxiosHandler } from "../utilis/ErrorsHandler";
 import { recipeCreationDTO } from "./recipe.models";
@@ -14,7 +14,7 @@ export default function CreateRecipe() {
     async function create(recipe: recipeCreationDTO) {
         // mando la richiesta post e poi ridireziono?
         try {
-            await axios.post(urlRecipe, recipe);
+            await axios.post(urlRecipes, recipe);
             navigate('/recipes');
         }
         catch (error) {

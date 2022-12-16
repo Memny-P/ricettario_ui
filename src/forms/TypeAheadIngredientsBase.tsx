@@ -1,21 +1,18 @@
 import axios, { AxiosResponse } from "axios";
-import { ErrorMessage, Field, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray, useFormikContext } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { AsyncTypeahead, ClearButton } from "react-bootstrap-typeahead";
 import { urlIngredientsbase } from "../endpoints";
 import { ingredientBaseDTO } from "../ingredients/ingredient.model";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-<<<<<<< HEAD
-import './TypeAheadIngredientsBase.css';
-=======
 import './TypeAhead.css';
->>>>>>> 70adf8f959984b79f2bc50d9f5a9988a605d0d42
 import { Spinner } from "react-bootstrap";
 
 export default function TypeAheadIngredientsBase(props: typeAheadProps) {
     // elementi tra cui cercare
     const [ingredientsBaseDB, setIngredientsBaseDB] = useState<ingredientBaseDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { values } = useFormikContext<any>(); // passo i dati direttamente nel value del form
 
     function handleSearch(query: string) {
         setIsLoading(true);
@@ -36,7 +33,9 @@ export default function TypeAheadIngredientsBase(props: typeAheadProps) {
                 onChange={(options) => {
                     if (options && options.length > 0) {
                         let ingredient = options[0] as ingredientBaseDTO;
-                        props.onSelect(ingredient.id);
+                        values[props.field] = ingredient.id;
+                        if (props.onSelect)
+                            props.onSelect(ingredient.id);
                     }
                 }}
                 options={ingredientsBaseDB}
@@ -72,8 +71,9 @@ export default function TypeAheadIngredientsBase(props: typeAheadProps) {
 }
 
 interface typeAheadProps {
+    field: string;
     displayName: string;
     defaultvalue?: ingredientBaseDTO[];
     // To parent
-    onSelect(ingredientBaseId: number): void;
+    onSelect?(ingredientBaseId: number): void;
 }

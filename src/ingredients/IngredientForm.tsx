@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import * as Yup from 'yup';
 import { urlIngredientsbase } from "../endpoints";
 import ImageField from "../forms/ImageField";
+import MeasurementField from "../forms/MeasurementField";
 import TextField from "../forms/TextField";
 import TypeAheadIngredientsBase from "../forms/TypeAheadIngredientsBase";
 import Button from "../utilis/Button";
@@ -13,13 +14,14 @@ import { ingredientBaseDTO, ingredientCreationDTO, ingredientEditDTO } from "./i
 
 export default function IngredientForm(props: ingredientFormProps) {
 
-    const [idIngredientBase, setIngredientBase] = useState<number>(props.model.ingredientBaseId);
+    // const [idIngredientBase, setIngredientBase] = useState<number>(props.model.ingredientBaseId);
 
     return (
         <Formik
             initialValues={props.model}
             onSubmit={(values, action) => {
-                values.ingredientBaseId = idIngredientBase;
+                //  values.ingredientBaseId = idIngredientBase;
+                console.log(values);
                 props.onSubmit(values, action)
             }}
             validationSchema={Yup.object({
@@ -38,17 +40,23 @@ export default function IngredientForm(props: ingredientFormProps) {
                 <Form>
                     <TextField field="name" displayName="Name" />
                     <TypeAheadIngredientsBase
+                        field="ingredientBaseId"
+                        displayName="Generic ingredient"
                         defaultvalue={props.initialIngredient ?
                             [props.initialIngredient.ingredientBase] : []}
-                        displayName="Generic ingredient"
-                        onSelect={idIngredientBaseSelected => setIngredientBase(idIngredientBaseSelected)}
+                    // onSelect={idIngredientBaseSelected => setIngredientBase(idIngredientBaseSelected)}
+                    />
+                    <MeasurementField
+                        field="measurementId"
+                        displayName="Choose default measurement"
                     />
                     <ImageField
                         field="picture"
                         displayName="Picture"
                         imageURL={props.model.pictureUrl}
                     />
-                    <Button disabled={formikProps.isSubmitting} type="submit">Save changes</Button>
+                    {/* <Button disabled={formikProps.isSubmitting} type="submit">Save changes</Button> */}
+                    <Button type="submit">Save changes</Button>
                     <Link className="btn btn-secondary" to="/ingredients">Cancel</Link>
                 </Form>
             )}

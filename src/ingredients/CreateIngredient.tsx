@@ -25,7 +25,8 @@ export default function CreateIngredient() {
         <>
             <h3>Create Ingredient</h3>
             <DisplayErrors errors={errors} />
-            <IngredientForm model={{ name: "", ingredientBaseId: -1, pictureUrl: "" }}
+            <IngredientForm
+                model={{ name: "", ingredientBaseId: -1, measurementId: -1, pictureUrl: "" }}
                 onSubmit={async value => {
                     create(value);
                 }} />

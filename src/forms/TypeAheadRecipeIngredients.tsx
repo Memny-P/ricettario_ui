@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import { ErrorMessage, Field, FieldArray } from "formik";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import { AsyncTypeahead, ClearButton } from "react-bootstrap-typeahead";
-import { urlIngredients, urlIngredientsbase, urlRecipe } from "../endpoints";
-import { ingredientBaseDTO, ingredientDTO } from "../ingredients/ingredient.model";
+import { urlRecipes } from "../endpoints";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { Spinner } from "react-bootstrap";
 import './TypeAhead.css';
@@ -11,16 +9,17 @@ import { recipeIngredientDTO } from "../recipes/recipe.models";
 
 export default function TypeAheadRecipeIngredients(props: typeAheadProps) {
     // elementi tra cui cercare
-    const [ingredientsDB, setIngredientsDB] = useState<ingredientDTO[]>([]);
+    const [recipeIngredientsDB, setRecipeIngredientsDB] = useState<recipeIngredientDTO[]>([]);
     const [ingredientsIdsSelected, setIngredientsIdsSelected] = useState<number[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const typeaheadRef = useRef<any>(null);
 
     function handleSearch(query: string) {
         setIsLoading(true);
 
-        axios.get(`${urlRecipe}/searchByName/${query}}`)
-            .then((response: AxiosResponse<ingredientDTO[]>) => {
-                setIngredientsDB(response.data);
+        axios.get(`${urlRecipes}/recipeIngredients/searchByName/${query}`)
+            .then((response: AxiosResponse<recipeIngredientDTO[]>) => {
+                setRecipeIngredientsDB(response.data);
                 setIsLoading(false);
             });
     }
@@ -32,24 +31,19 @@ export default function TypeAheadRecipeIngredients(props: typeAheadProps) {
                 id="typeahead"
                 onChange={(options) => {
                     if (options && options.length > 0) {
-                        let ingredientChosen = options[0] as ingredientDTO;
+                        let ingredientChosen = options[0] as recipeIngredientDTO;
 
                         let IsIngredientAlreadySelected = props.recipeIngredients
-                            .findIndex(x => x.ingredient.id === ingredientChosen.id) === -1;
+                            .findIndex(x => x.ingredient === ingredientChosen.ingredient) === -1;
                         if (IsIngredientAlreadySelected) {
-                            let recipeIngredient = {
-                                ingredient: ingredientChosen,
-                                measurement: 'TODO recuperare starter',
-                                quantity: 0
-                            }
-
-                            props.onAdd([...props.recipeIngredients, recipeIngredient]);
-                            setIngredientsIdsSelected([...ingredientsIdsSelected, ingredientChosen.id]);
+                            props.onAdd([...props.recipeIngredients, ingredientChosen]);
+                            setIngredientsIdsSelected([...ingredientsIdsSelected, ingredientChosen.ingredient.id]);
+                            typeaheadRef.current.clear()
                         }
                     }
                 }}
-                options={ingredientsDB}
-                labelKey="name"
+                options={recipeIngredientsDB}
+                labelKey={option => (option as recipeIngredientDTO).ingredient.name}
                 filterBy={() => true}   // comunico che il filtro è già applicato a livello della webapi
                 isLoading={isLoading}
                 onSearch={handleSearch} // consume API
@@ -60,10 +54,11 @@ export default function TypeAheadRecipeIngredients(props: typeAheadProps) {
                 renderMenuItemChildren={
                     ingredient => (
                         <>
-                            <span>{(ingredient as ingredientDTO).name}</span>
+                            <span>{(ingredient as recipeIngredientDTO).ingredient.name}</span>
                         </>
                     )
                 }
+                ref={typeaheadRef}
             >
                 {({ onClear, selected }) => (
                     <div className="rbt-aux">
@@ -72,7 +67,7 @@ export default function TypeAheadRecipeIngredients(props: typeAheadProps) {
                                 onClick={onClear}
                                 style={{ color: 'red' }}
                             />}
-                        {/* {!selected.length && <Spinner animation="grow" size="sm" />} */}
+                        {!ingredientsIdsSelected.length && <Spinner animation="grow" size="sm" />}
                     </div>
                 )}
             </AsyncTypeahead>
@@ -81,10 +76,12 @@ export default function TypeAheadRecipeIngredients(props: typeAheadProps) {
                     <li key={recipeIngredient.ingredient.id}
                         className="list-group-item list-group-item-action"
                     >
-                        {props.listUI(recipeIngredient)}
-                        <span className="badge badge-primary badge-pill pointer text-dark"
+                        {props.listUI(recipeIngredient, <span className="badge badge-primary badge-pill pointer text-dark"
                             style={{ marginLeft: '0.5rem' }}
-                            onClick={() => props.onRemove(recipeIngredient)}>X</span>
+                            onClick={() => {
+                                props.onRemove(recipeIngredient)
+                                setIngredientsIdsSelected([...ingredientsIdsSelected.filter(x => x !== recipeIngredient.ingredient.id)]);
+                            }}>X</span>)}
                     </li>)}
             </ul>
         </div>
@@ -98,5 +95,5 @@ interface typeAheadProps {
     // To parent
     onAdd(ingredients: recipeIngredientDTO[]): void;
     onRemove(ingredient: recipeIngredientDTO): void;
-    listUI(ingredient: recipeIngredientDTO): ReactElement;
+    listUI(ingredient: recipeIngredientDTO, closeButton: ReactElement): ReactElement;
 }
